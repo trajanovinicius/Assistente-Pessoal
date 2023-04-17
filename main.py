@@ -3,10 +3,14 @@ import pyttsx3
 import datetime
 import wikipedia
 import pywhatkit
+import os
 
 
 audio = sr.Recognizer()
 cerebro = pyttsx3.init()
+cerebro.say("Olá Doutor Trajano, Bem vindo!")
+cerebro.say("Como posso ajudar o senhor?")
+cerebro.runAndWait()
 
 vozes = cerebro.getProperty("voices")
 cerebro.setProperty("voz", vozes[1].id)
@@ -47,6 +51,10 @@ def comando_voz_usuario():
         musica = comando.replace("toque", "")
         resultado = pywhatkit.playonyt(musica)
         cerebro.say("Tocando música")
+        cerebro.runAndWait()
+    elif "desligar o computador" in comando:
+        os.system("shutdown /s /t 5")
+        cerebro.say("Desligando Computador")
         cerebro.runAndWait()
 
 
