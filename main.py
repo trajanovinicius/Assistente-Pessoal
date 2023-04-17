@@ -2,50 +2,52 @@ import speech_recognition as sr
 import pyttsx3
 import datetime
 import wikipedia
-
-# Configurar o reconhecimento de voz
-r = sr.Recognizer()
-
-# Configurar a síntese de voz
-engine = pyttsx3.init()
-
-# Definir a voz padrão
-voices = engine.getProperty("voices")
-engine.setProperty("voice", voices[0].id)
+import pywhatkit
 
 
-# Definir a assistente virtual
-def assistant(text):
-    if "Olá Tina" in text:
-        speak("Olá senhor trajano, como posso ajudar?")
-    elif "que horas são" in text:
-        now = datetime.datetime.now()
-        speak("São " + str(now.hour) + " horas e " + str(now.minute) + " minutos.")
-    elif "pesquise por" in text:
-        query = text.replace("pesquise por", "")
-        speak("Pesquisando por " + query)
-        wikipedia.set_lang("pt")
-        results = wikipedia.summary(query, sentences=2)
-        speak(results)
-    else:
-        speak("Desculpe, não entendi o que você disse.")
+audio = sr.Recognizer()
+maquina = pyttsx3.init()
+
+vozes = maquina.getProperty("voices")
+maquina.setProperty("voz", vozes[1].id)
 
 
-# Definir a função para sintetizar a voz
-def speak(text):
-    engine.say(text)
-    engine.runAndWait()
-
-
-# Configurar o microfone
-with sr.Microphone() as source:
-    print("Ouvindo...")
-    audio = r.listen(source)
-
+def executa_comando():
     try:
-        print("Processando...")
-        text = r.recognize_google(audio, language="pt-BR")
-        print("Você disse: {}".format(text))
-        assistant(text)
+        with sr.Microphone(2) as source:
+            print("Ouvindo..")
+            voz = audio.listen(source)
+            comando = audio.recognize_google(voz, language="pt-BR")
+            comando = comando.lower()
+            if "tina" in comando:
+                comando = comando.replace("tina", "")
+                maquina.say(comando)
+                maquina.runAndWait()
+
     except:
-        print("Desculpe, não consegui entender o que você disse.")
+        print("Microfone não está ok")
+
+    return comando
+
+
+def comando_voz_usuario():
+    comando = executa_comando()
+    if "horas" in comando:
+        hora = datetime.datetime.now().strftime("%H:%M")
+        maquina.say("Agora são" + hora)
+        maquina.runAndWait()
+    elif "procure por" in comando:
+        procurar = comando.replace("procure por", "")
+        wikipedia.set_lang("pt")
+        resultado = wikipedia.summary(procurar, 2)
+        print(resultado)
+        maquina.say(resultado)
+        maquina.runAndWait()
+    elif "toque" in comando:
+        musica = comando.replace("toque", "")
+        resultado = pywhatkit.playonyt(musica)
+        maquina.say("Tocando música")
+        maquina.runAndWait()
+
+
+comando_voz_usuario()
