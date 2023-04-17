@@ -6,10 +6,10 @@ import pywhatkit
 
 
 audio = sr.Recognizer()
-maquina = pyttsx3.init()
+cerebro = pyttsx3.init()
 
-vozes = maquina.getProperty("voices")
-maquina.setProperty("voz", vozes[1].id)
+vozes = cerebro.getProperty("voices")
+cerebro.setProperty("voz", vozes[1].id)
 
 
 def executa_comando():
@@ -21,8 +21,8 @@ def executa_comando():
             comando = comando.lower()
             if "Samira" in comando:
                 comando = comando.replace("Samira", "")
-                maquina.say(comando)
-                maquina.runAndWait()
+                cerebro.say(comando)
+                cerebro.runAndWait()
 
     except:
         print("Microfone não está ok")
@@ -34,20 +34,20 @@ def comando_voz_usuario():
     comando = executa_comando()
     if "horas" in comando:
         hora = datetime.datetime.now().strftime("%H:%M")
-        maquina.say("Agora são" + hora)
-        maquina.runAndWait()
+        cerebro.say("Agora são" + hora)
+        cerebro.runAndWait()
     elif "procure por" in comando:
         procurar = comando.replace("procure por", "")
         wikipedia.set_lang("pt")
         resultado = wikipedia.summary(procurar, 2)
         print(resultado)
-        maquina.say(resultado)
-        maquina.runAndWait()
+        cerebro.say(resultado)
+        cerebro.runAndWait()
     elif "toque" in comando:
         musica = comando.replace("toque", "")
         resultado = pywhatkit.playonyt(musica)
-        maquina.say("Tocando música")
-        maquina.runAndWait()
+        cerebro.say("Tocando música")
+        cerebro.runAndWait()
 
 
 comando_voz_usuario()
